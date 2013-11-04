@@ -1,6 +1,3 @@
-# *.class #
+# Folders #
 
-# Package Files #
-# *.jar #
-# *.war #
-# *.ear #
+metadata/
