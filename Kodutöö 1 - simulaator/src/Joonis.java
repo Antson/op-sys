@@ -42,9 +42,9 @@ public class Joonis extends JPanel {
 				graphics2D.drawRect(25 + j * 20, 30 + i * 20, 20, 20);
 			}
 		}
-
+		
 		int algus = 10;
-		graphics2D.fillOval(x - 5, y - 5, 10, 10);
+		graphics2D.fillRect(x - 5, y - 5, 10, 10);
 		if (algoritm == "FCFS") {
 			for (int i = 0; i < muster.size(); i++) {
 				posX = 35 + 20 * muster.get(i);
@@ -75,26 +75,25 @@ public class Joonis extends JPanel {
 		} else if (algoritm == "LOOK") {
 			ArrayList<Integer> koopia = new ArrayList(muster);
 			Collections.sort(koopia);
-			int max = Collections.max(koopia);
-			for (int i = 0;;) {
-				if (koopia.get(i) == max) {
-					break;
-				}
+			ArrayList<Integer> väiksemad = new ArrayList();
+			ArrayList<Integer> suuremad = new ArrayList();
+			for (int i = 0; i < koopia.size(); i++){
 				if (koopia.get(i) >= algus) {
-					posX = 35 + 20 * koopia.get(i);
+					suuremad.add(koopia.get(i));
+				} else väiksemad.add(koopia.get(i));
+			}
+			if (suuremad.size() > 0) {
+				for (int i = 0; i < suuremad.size(); i++) {
+					posX = 35 + 20 * suuremad.get(i);
 					graphics2D.drawLine(x, y, posX, y + 20);
 					x = posX;
 					y += 20;
 					graphics2D.fillOval(x - 5, y - 5, 10, 10);
-					algus = koopia.get(i);
-					koopia.remove(i);
-				} else {
-					i++;
 				}
 			}
-			if (koopia.size() > 0) {
-				for (int i = koopia.size(); i > 0; i--) {
-					posX = 35 + 20 * koopia.get(i - 1);
+			if (väiksemad.size() != 0) {
+				for (int i = väiksemad.size(); i > 0; i--) {
+					posX = 35 + 20 * väiksemad.get(i-1);
 					graphics2D.drawLine(x, y, posX, y + 20);
 					x = posX;
 					y += 20;
@@ -123,6 +122,12 @@ public class Joonis extends JPanel {
 			graphics2D.drawLine(x, y, 655, y + 10);
 			x = 655;
 			y += 10;
+			if (väiksemad.size() == 0) {
+				graphics2D.drawLine(x, y, 35, y + 10);
+				for (int j = 0; j < 32; j++) {
+					graphics2D.drawRect(25 + j * 20, 70 + koopia.size() * 20, 20, 20);
+				}
+			}
 			if (väiksemad.size() > 0) {
 				posX = 35 + 20 * väiksemad.get(väiksemad.size()-1);
 				graphics2D.drawLine(x, y, posX, y + 10);
@@ -130,6 +135,9 @@ public class Joonis extends JPanel {
 				y += 10;
 				graphics2D.fillOval(x - 5, y - 5, 10, 10);
 				väiksemad.remove(väiksemad.size()-1);
+				if (väiksemad.size() == 0) {
+					graphics2D.drawLine(x, y, 35, y + 10);
+				}
 			} 
 			
 			if (väiksemad.size() > 0) {
@@ -139,9 +147,101 @@ public class Joonis extends JPanel {
 					x = posX;
 					y += 20;
 					graphics2D.fillOval(x - 5, y - 5, 10, 10);
+					if (i == 1) {
+						graphics2D.drawLine(x, y, 35, y + 10);
+					}
 				}
 			}
 			
+		} else if (algoritm == "C-LOOK") {
+			ArrayList<Integer> koopia = new ArrayList(muster);
+			Collections.sort(koopia);
+			ArrayList<Integer> väiksemad = new ArrayList();
+			ArrayList<Integer> suuremad = new ArrayList();
+			for (int i = 0; i < koopia.size(); i++){
+				if (koopia.get(i) >= algus) {
+					suuremad.add(koopia.get(i));
+				} else väiksemad.add(koopia.get(i));
+			}
+			if (suuremad.size() > 0) {
+				for (int i = 0; i < suuremad.size(); i++) {
+					posX = 35 + 20 * suuremad.get(i);
+					graphics2D.drawLine(x, y, posX, y + 20);
+					x = posX;
+					y += 20;
+					graphics2D.fillOval(x - 5, y - 5, 10, 10);
+				}
+			}
+			if (väiksemad.size() != 0) {
+				for (int i = 0; i < väiksemad.size(); i++) {
+					posX = 35 + 20 * väiksemad.get(i);
+					graphics2D.drawLine(x, y, posX, y + 20);
+					x = posX;
+					y += 20;
+					graphics2D.fillOval(x - 5, y - 5, 10, 10);
+				}
+			}
+		} else if (algoritm == "C-SCAN") {
+			ArrayList<Integer> koopia = new ArrayList(muster);
+			Collections.sort(koopia);
+			ArrayList<Integer> väiksemad = new ArrayList();
+			ArrayList<Integer> suuremad = new ArrayList();
+			for (int i = 0; i < koopia.size(); i++){
+				if (koopia.get(i) >= algus) {
+					suuremad.add(koopia.get(i));
+				} else väiksemad.add(koopia.get(i));
+			}
+			if (suuremad.size() > 0) {
+				for (int i = 0; i < suuremad.size(); i++) {
+					posX = 35 + 20 * suuremad.get(i);
+					graphics2D.drawLine(x, y, posX, y + 20);
+					x = posX;
+					y += 20;
+					graphics2D.fillOval(x - 5, y - 5, 10, 10);
+				}
+			}
+			graphics2D.drawLine(x, y, 655, y + 10);
+			x = 655;
+			y += 10;
+			graphics2D.drawLine(x, y, 35, y + 10);
+			x = 35;
+			y += 10;
+			if (väiksemad.size() == 0) {
+				for (int j = 0; j < 32; j++) {
+					graphics2D.drawRect(25 + j * 20, 70 + koopia.size() * 20, 20, 20);
+				}
+			} else {
+				int k = 0;
+				if (väiksemad.get(0) == 0) {
+					graphics2D.fillOval(x - 5, y - 5, 10, 10);
+					väiksemad.remove(0);
+					k = 1;
+				}
+				if (väiksemad.size() > 0) {
+					for (int i = 0; i < väiksemad.size(); i++) {
+						posX = 35 + 20 * väiksemad.get(i);
+						graphics2D.drawLine(x, y, posX, y + 20);
+						x = posX;
+						y += 20;
+						graphics2D.fillOval(x - 5, y - 5, 10, 10);
+					}
+					if (k == 0) {
+						for (int j = 0; j < 32; j++) {
+							graphics2D.drawRect(25 + j * 20, 70 + koopia.size() * 20, 20, 20);
+						}
+					}
+				}
+			}
+		} else if (algoritm == "NOOP") {
+			ArrayList<Integer> koopia = new ArrayList(muster);
+			Collections.sort(koopia);
+			for (int i = 0; i < koopia.size(); i++) {
+				posX = 35 + 20 * koopia.get(i);
+				graphics2D.drawLine(x, y, posX, y + 20);
+				x = posX;
+				y += 20;
+				graphics2D.fillOval(x - 5, y - 5, 10, 10);
+			}
 		}
 
 	}

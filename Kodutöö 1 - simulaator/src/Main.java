@@ -15,7 +15,7 @@ public class Main {
 
 		mainFrame = new JFrame("Simulaator");
 		mainFrame.setLayout(new GridLayout(2, 1));
-		mainFrame.setSize(700, 600);
+		mainFrame.setSize(700, 650);
 
 		joonistus = new Joonis();
 		joonistus.setBackground(Color.white);
