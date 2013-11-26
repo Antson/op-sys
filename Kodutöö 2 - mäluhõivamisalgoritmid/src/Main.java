@@ -14,7 +14,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		mainFrame = new JFrame("Simulaator");
-		mainFrame.setLayout(new GridLayout(2, 1));
+		mainFrame.setLayout(new GridLayout(2,1));
 		mainFrame.setSize(700, 650);
 
 		joonistus = new Joonis();
@@ -25,25 +25,25 @@ public class Main {
 		mainMenu.setLayout(new GridLayout(3, 1));
 
 		JPanel mustrid = new JPanel(new FlowLayout());
-		JButton näide1 = new JButton("10,5;20,7;1,3;2,2;12,3");
-		JButton näide2 = new JButton("4,2;8,4;16,1;2,5;18,3;12,2;14,4;6,2");
-		JButton näide3 = new JButton("8 24 11 2 19 13 32 15 4 12");
+		final JButton näide1 = new JButton("10,5;20,7;1,3;2,2;12,3");
+		final JButton näide2 = new JButton("4,2;8,4;16,1;2,5;18,3;12,2;14,4");
+		final JButton näide3 = new JButton("25,5;18,2;5,4;8,3;16,4;5,1;16,2");
 
 		näide1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setMuster("1 10 5 20");
+				setMuster(näide1.getText());
 			}
 		});
 
 		näide2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setMuster("18 30 15 0 23 7 16");
+				setMuster(näide2.getText());
 			}
 		});
 
 		näide3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setMuster("8 24 11 2 19 13 31 15 4 12");
+				setMuster(näide3.getText());
 			}
 		});
 
@@ -150,12 +150,7 @@ public class Main {
 	}
 
 	private static void setMuster(String s) {
-		ArrayList<Integer> muster = new ArrayList<Integer>();
-		String[] arvud = s.split(" ");
-		for (String arv : arvud) {
-			muster.add(Integer.parseInt(arv));
-		}
-		joonistus.setMuster(muster);
+		joonistus.setMuster(s);
 		joonistus.repaint();
 	}
 	
