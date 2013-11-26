@@ -25,8 +25,8 @@ public class Main {
 		mainMenu.setLayout(new GridLayout(3, 1));
 
 		JPanel mustrid = new JPanel(new FlowLayout());
-		JButton näide1 = new JButton("1 10 5 20");
-		JButton näide2 = new JButton("18 30 15 0 23 7 16");
+		JButton näide1 = new JButton("10,5;20,7;1,3;2,2;12,3");
+		JButton näide2 = new JButton("4,2;8,4;16,1;2,5;18,3;12,2;14,4;6,2");
 		JButton näide3 = new JButton("8 24 11 2 19 13 32 15 4 12");
 
 		näide1.addActionListener(new ActionListener() {
