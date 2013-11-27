@@ -3,6 +3,7 @@ public class Protsess {
 
 	private int eluiga;
 	private int maht;
+	private int algus;
 	
 	Protsess(int maht, int eluiga) {
 		this.eluiga = eluiga;
@@ -25,4 +26,15 @@ public class Protsess {
 		this.maht = maht;
 	}
 
+	public void setAlgus(int algus) {
+		this.algus = algus;
+	}
+	
+	public int getAlgus() {
+		return algus;
+	}
+	
+	public String toString() {
+		return this.maht + " | " + this.eluiga;
+	}
 }

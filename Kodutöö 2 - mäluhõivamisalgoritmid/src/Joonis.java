@@ -1,19 +1,22 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.ConcurrentModificationException;
 
 import javax.swing.*;
 
 public class Joonis extends JPanel {
 
 	private ArrayList<Protsess> protsessid = new ArrayList<Protsess>();
+	private ArrayList<Protsess> mälusProtsessid = new ArrayList<Protsess>();
+	private String protsessTekst = "";
 	private String algoritm = "First-fit";
 	private Integer number = 0;
 	private int mälu[] = new int[50];
 
 	public void paintComponent(Graphics g) {
 		int x = 100;
-		int y = 100;
+		int y = 590;
 		int posX;
 		super.paintComponent(g);
 		Graphics2D graafika = (Graphics2D) g;
@@ -29,33 +32,122 @@ public class Joonis extends JPanel {
 		int tekstX = 15;
 		graafika.drawString("Algoritm:", tekstX, 25);
 		graafika.drawString(algoritm, tekstX + 95, 25);
-		graafika.drawString("Protsessid:", tekstX, 50);
+		graafika.drawString("Töötlemata protsessid:", tekstX, 50);
 		StringBuilder tekstProts = new StringBuilder("");
-		for (Protsess protsess: protsessid) {
+		for (Protsess protsess : protsessid) {
 			tekstProts.append(protsess.getMaht());
-			tekstProts.append(";");
+			tekstProts.append("|");
 			tekstProts.append(protsess.getEluiga());
-			tekstProts.append(",");
+			tekstProts.append(" , ");
 		}
 		graafika.drawString(tekstProts.toString(), tekstX, 70);
 		g.setFont(def);
 
 		for (int i = 0; i < 50; i++) {
 			graafika.drawRect(x, y, 150, 10);
-			y += 10;
+			y -= 10;
 		}
-		y = 100;
-		mälu[0] = 1;
-		mälu[19] = 1;
+		y = 590;
+
 		for (int i = 0; i < mälu.length; i++) {
 			if (mälu[i] == 1) {
 				graafika.setColor(Color.red);
 				graafika.fillRect(x + 1, y + 1, 149, 9);
+				graafika.setColor(Color.black);
+				graafika.drawString("1", x - 10, y + 10);
+				graafika.setColor(Color.red);
+			} else {
+				graafika.setColor(Color.black);
+				graafika.drawString("0", x - 10, y + 10);
+				graafika.setColor(Color.red);
 			}
-			y += 10;
-		}
-		graafika.setColor(Color.black);
+			y -= 10;
 
+		}
+		y = 590;
+
+		graafika.setColor(Color.black);
+		for (Protsess protsess : mälusProtsessid) {
+			graafika.drawLine(x + 160, 600 - protsess.getAlgus() * 10, x + 170,
+					600 - protsess.getAlgus() * 10);
+			graafika.drawLine(x + 170, 600 - protsess.getAlgus() * 10, x + 170,
+					600 - protsess.getAlgus() * 10 - protsess.getMaht() * 10);
+			graafika.drawLine(x + 160, 600 - protsess.getAlgus() * 10
+					- protsess.getMaht() * 10, x + 170,
+					600 - protsess.getAlgus() * 10 - protsess.getMaht() * 10);
+			graafika.drawString(protsess.toString(), x + 180, ((600 - protsess.getAlgus() * 10) + 
+					(600 - protsess.getAlgus() * 10 - protsess.getMaht() * 10)) / 2 + 5);
+		}
+
+	}
+	
+	public void lisaMällu() {
+		if(algoritm == "First-fit") {
+			protsessidMällu();
+		}
+	}
+
+	public void protsessidMällu() {
+		ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
+		for (Protsess protsess : protsessid) {
+			boolean leitiKoht = false;
+			for (int i = 0; i < mälu.length; i++) {
+				if (mälu[i] == 0) {
+					for (int algus = i, pikkus = 1; algus < mälu.length; algus++, pikkus++) {
+						if (mälu[algus] != 0)
+							break;
+						if (pikkus == protsess.getMaht()) {
+							leitiKoht = true;
+							mälusProtsessid.add(protsess);
+							eemaldamisele.add(protsess);
+							protsess.setAlgus(i);
+							for (int alusta = i; alusta < i + pikkus; alusta++) {
+								mälu[alusta] = 1;
+							}
+						}
+					}
+				}
+				if (leitiKoht == true) {
+					break;
+				}
+			}
+		}
+		if (!eemaldamisele.isEmpty()) {
+			for (Protsess protsess: eemaldamisele) {
+				protsessid.remove(protsess);
+			}
+		}
+	}
+
+	public void vähendaSamme() {
+		ArrayList<Protsess> lõppenud = new ArrayList<Protsess>();
+		for (Protsess protsess : mälusProtsessid) {
+			protsess.setEluiga(protsess.getEluiga() - 1);
+			if (protsess.getEluiga() == 0) {
+				lõppenud.add(protsess);
+			}
+		}
+		if (!lõppenud.isEmpty()) {
+			eemaldaMälust(lõppenud);
+		}
+	}
+
+	public void eemaldaMälust(ArrayList<Protsess> protsessid) {
+		for (Protsess protsess : protsessid) {
+			for (int i = protsess.getAlgus(); i < protsess.getMaht()
+					+ protsess.getAlgus(); i++) {
+				mälu[i] = 0;
+			}
+			mälusProtsessid.remove(protsess);
+		}
+	}
+
+	public String getProtsessTekst() {
+		return protsessTekst;
+	}
+
+	public void setProtsessTekst(String protsessTekst) {
+		this.protsessTekst = protsessTekst;
 	}
 
 	public ArrayList<Protsess> getprotsessid() {
@@ -74,4 +166,11 @@ public class Joonis extends JPanel {
 		this.algoritm = algoritm;
 	}
 
+	public void setMälu(int[] mälu) {
+		this.mälu = mälu;
+	}
+
+	public void tühjendaMälu() {
+		mälusProtsessid.clear();
+	}
 }
