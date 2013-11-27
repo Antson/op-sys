@@ -14,7 +14,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		mainFrame = new JFrame("Simulaator");
-		mainFrame.setLayout(new GridLayout(2,1));
+		mainFrame.setLayout(new GridLayout(1,2));
 		mainFrame.setSize(700, 650);
 
 		joonistus = new Joonis();
@@ -127,26 +127,6 @@ public class Main {
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
 
-	}
-
-	private static GridBagConstraints mustridConstraints() {
-		GridBagConstraints gc = new GridBagConstraints();
-		gc.anchor = GridBagConstraints.SOUTH;
-		// gc.weightx = 0.2;
-		// gc.weighty = 0d;
-		gc.gridwidth = GridBagConstraints.RELATIVE;
-		gc.fill = GridBagConstraints.VERTICAL;
-		return gc;
-	}
-
-	private GridBagConstraints nupudConstraints() {
-		GridBagConstraints gc = new GridBagConstraints();
-
-		gc.weightx = 0;
-		gc.anchor = GridBagConstraints.CENTER;
-		gc.gridwidth = GridBagConstraints.RELATIVE;
-
-		return gc;
 	}
 
 	private static void setMuster(String s) {
