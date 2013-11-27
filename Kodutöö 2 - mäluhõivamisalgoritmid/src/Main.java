@@ -9,7 +9,7 @@ public class Main {
 
 	private static Joonis joonistus;
 	private static JFrame mainFrame;
-	private static JTextField omaMuster;
+	private static JTextField omaprotsess;
 
 	public static void main(String[] args) {
 
@@ -31,19 +31,19 @@ public class Main {
 
 		näide1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setMuster(näide1.getText());
+				setprotsess(näide1.getText());
 			}
 		});
 
 		näide2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setMuster(näide2.getText());
+				setprotsess(näide2.getText());
 			}
 		});
 
 		näide3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				setMuster(näide3.getText());
+				setprotsess(näide3.getText());
 			}
 		});
 
@@ -53,19 +53,19 @@ public class Main {
 
 		mainMenu.add(mustrid);
 
-		omaMuster = new JTextField();
+		omaprotsess = new JTextField();
 		JButton simuleeriNupp = new JButton("Simuleeri oma \n"
 				+ "päringute järjekord");
 		JPanel omaSisend = new JPanel();
 		omaSisend.setLayout(new FlowLayout());
 		omaSisend.add(simuleeriNupp, BorderLayout.WEST);
-		omaMuster.setColumns(20);
-		omaSisend.add(omaMuster, BorderLayout.CENTER);
+		omaprotsess.setColumns(20);
+		omaSisend.add(omaprotsess, BorderLayout.CENTER);
 
 
 		simuleeriNupp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String s = omaMuster.getText();
+				String s = omaprotsess.getText();
 				if (!(s.equals(""))) {
 					String[] arvud = s.split(" ");
 					if (arvud.length > 10) {
@@ -80,7 +80,7 @@ public class Main {
 									throw new IndexOutOfBoundsException();
 								}
 							}
-							setMuster(s);
+							setprotsess(s);
 						} catch (NumberFormatException ex) {
 							JOptionPane.showMessageDialog(null,
 									"Ei sisestatud täisarve või leidub üleliigseid tühikuid."
@@ -129,8 +129,15 @@ public class Main {
 
 	}
 
-	private static void setMuster(String s) {
-		joonistus.setMuster(s);
+	private static void setprotsess(String s) {
+		String protsessid[] = s.split(";");
+		ArrayList<Protsess> protsid = new ArrayList<Protsess>();
+		for (String protsess: protsessid) {
+			String andmed[] = protsess.split(",");
+			Protsess pro = new Protsess(Integer.parseInt(andmed[0]), Integer.parseInt(andmed[1]));
+			protsid.add(pro);
+		}
+		joonistus.setprotsessid(protsid);
 		joonistus.repaint();
 	}
 	

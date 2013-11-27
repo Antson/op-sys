@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class Joonis extends JPanel {
 
-	private String muster = "";
+	private ArrayList<Protsess> protsessid = new ArrayList<Protsess>();
 	private String algoritm = "First-fit";
 	private Integer number = 0;
 	private int mälu[] = new int[50];
@@ -30,7 +30,14 @@ public class Joonis extends JPanel {
 		graafika.drawString("Algoritm:", tekstX, 25);
 		graafika.drawString(algoritm, tekstX + 95, 25);
 		graafika.drawString("Protsessid:", tekstX, 50);
-		graafika.drawString(muster, tekstX, 70);
+		StringBuilder tekstProts = new StringBuilder("");
+		for (Protsess protsess: protsessid) {
+			tekstProts.append(protsess.getMaht());
+			tekstProts.append(";");
+			tekstProts.append(protsess.getEluiga());
+			tekstProts.append(",");
+		}
+		graafika.drawString(tekstProts.toString(), tekstX, 70);
 		g.setFont(def);
 
 		for (int i = 0; i < 50; i++) {
@@ -51,12 +58,12 @@ public class Joonis extends JPanel {
 
 	}
 
-	public String getmuster() {
-		return muster;
+	public ArrayList<Protsess> getprotsessid() {
+		return protsessid;
 	}
 
-	public void setMuster(String muster) {
-		this.muster = muster;
+	public void setprotsessid(ArrayList<Protsess> s) {
+		this.protsessid = s;
 	}
 
 	public String getAlgoritm() {
