@@ -40,6 +40,9 @@ public class Joonis extends JPanel {
 			tekstProts.append(protsess.getEluiga());
 			tekstProts.append(" , ");
 		}
+		if (!protsessid.isEmpty()) {
+			tekstProts.deleteCharAt(tekstProts.length() - 2);
+		}
 		graafika.drawString(tekstProts.toString(), tekstX, 70);
 		g.setFont(def);
 
@@ -49,22 +52,25 @@ public class Joonis extends JPanel {
 		}
 		y = 590;
 
-		for (int i = 0; i < mälu.length; i++) {
-			if (mälu[i] == 1) {
-				graafika.setColor(Color.red);
-				graafika.fillRect(x + 1, y + 1, 149, 9);
-				graafika.setColor(Color.black);
-				Integer num = new Integer(i);
-				graafika.drawString(num.toString(), x - 15, y + 10);
-				graafika.setColor(Color.red);
-			} else {
-				graafika.setColor(Color.black);
-				Integer num = new Integer(i);
-				graafika.drawString(num.toString(), x - 15, y + 10);
-				graafika.setColor(Color.red);
-			}
-			y -= 10;
+		Color plokivärv = new Color(50, 150, 190);
 
+		if (!mälusProtsessid.isEmpty()) {
+			for (Protsess protsess : mälusProtsessid) {
+				graafika.setColor(protsess.getVärv());
+				y -= protsess.getAlgus() * 10;
+				for (int i = protsess.getAlgus(); i < protsess.getMaht()
+						+ protsess.getAlgus(); i++) {
+					graafika.fillRect(x + 1, y + 1, 149, 9);
+					y -= 10;
+				}
+				y = 590;
+			}
+		}
+		graafika.setColor(Color.black);
+		for (int i = 0; i < mälu.length; i++) {
+			Integer num = new Integer(i);
+			graafika.drawString(num.toString(), x - 15, y + 10);
+			y -= 10;
 		}
 		y = 590;
 
@@ -88,11 +94,11 @@ public class Joonis extends JPanel {
 
 	public void lisaMällu() {
 		if (algoritm == "First-fit") {
-			
+
 			protsessidMällu();
-			
+
 		} else if (algoritm == "Best-fit") {
-			
+
 			ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
 			for (Protsess protsess : protsessid) {
 				ArrayList<int[]> vabadKohad = leiaKohad();
@@ -102,8 +108,8 @@ public class Joonis extends JPanel {
 						if (vabakoht[1] - vabakoht[0] + 1 >= protsess.getMaht()) {
 							if (parimVabakoht == null) {
 								parimVabakoht = vabakoht;
-							} else if (parimVabakoht[1] - parimVabakoht[0] + 1 > 
-							vabakoht[1] - vabakoht[0] + 1) {
+							} else if (parimVabakoht[1] - parimVabakoht[0] + 1 > vabakoht[1]
+									- vabakoht[0] + 1) {
 								parimVabakoht = vabakoht;
 							}
 						}
@@ -112,8 +118,8 @@ public class Joonis extends JPanel {
 						mälusProtsessid.add(protsess);
 						eemaldamisele.add(protsess);
 						protsess.setAlgus(parimVabakoht[0]);
-						for (int alusta = parimVabakoht[0]; 
-								alusta < parimVabakoht[0] + protsess.getMaht(); alusta++) {
+						for (int alusta = parimVabakoht[0]; alusta < parimVabakoht[0]
+								+ protsess.getMaht(); alusta++) {
 							mälu[alusta] = 1;
 						}
 					}
@@ -124,9 +130,9 @@ public class Joonis extends JPanel {
 					protsessid.remove(protsess);
 				}
 			}
-			
+
 		} else if (algoritm == "Worst-fit") {
-			
+
 			ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
 			for (Protsess protsess : protsessid) {
 				ArrayList<int[]> vabadKohad = leiaKohad();
@@ -136,8 +142,8 @@ public class Joonis extends JPanel {
 						if (vabakoht[1] - vabakoht[0] + 1 >= protsess.getMaht()) {
 							if (parimVabakoht == null) {
 								parimVabakoht = vabakoht;
-							} else if (parimVabakoht[1] - parimVabakoht[0] + 1 < 
-							vabakoht[1] - vabakoht[0] + 1) {
+							} else if (parimVabakoht[1] - parimVabakoht[0] + 1 < vabakoht[1]
+									- vabakoht[0] + 1) {
 								parimVabakoht = vabakoht;
 							}
 						}
@@ -146,8 +152,8 @@ public class Joonis extends JPanel {
 						mälusProtsessid.add(protsess);
 						eemaldamisele.add(protsess);
 						protsess.setAlgus(parimVabakoht[0]);
-						for (int alusta = parimVabakoht[0]; 
-								alusta < parimVabakoht[0] + protsess.getMaht(); alusta++) {
+						for (int alusta = parimVabakoht[0]; alusta < parimVabakoht[0]
+								+ protsess.getMaht(); alusta++) {
 							mälu[alusta] = 1;
 						}
 					}
@@ -158,11 +164,38 @@ public class Joonis extends JPanel {
 					protsessid.remove(protsess);
 				}
 			}
-			
+
 		} else if (algoritm == "Random-fit") {
 
-			
-			
+			ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
+			for (Protsess protsess : protsessid) {
+				ArrayList<int[]> vabadKohad = leiaKohad();
+				if (!vabadKohad.isEmpty()) {
+					ArrayList<int[]> sobivadKohad = new ArrayList<int[]>();
+					for (int[] vabakoht : vabadKohad) {
+						if (vabakoht[1] - vabakoht[0] + 1 >= protsess.getMaht()) {
+							sobivadKohad.add(vabakoht);
+						}
+					}
+					if (!sobivadKohad.isEmpty()) {
+						int index = (int) (Math.random() * sobivadKohad.size());
+						int[] juhuslikKoht = sobivadKohad.get(index);
+						mälusProtsessid.add(protsess);
+						eemaldamisele.add(protsess);
+						protsess.setAlgus(juhuslikKoht[0]);
+						for (int alusta = juhuslikKoht[0]; alusta < juhuslikKoht[0]
+								+ protsess.getMaht(); alusta++) {
+							mälu[alusta] = 1;
+						}
+					}
+				}
+			}
+			if (!eemaldamisele.isEmpty()) {
+				for (Protsess protsess : eemaldamisele) {
+					protsessid.remove(protsess);
+				}
+			}
+
 		}
 	}
 

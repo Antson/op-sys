@@ -17,7 +17,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		mainFrame = new JFrame("Simulaator");
+		mainFrame = new JFrame("Mäluhõivamisalgoritmide simulaator");
 		mainFrame.setLayout(new GridLayout(1,2));
 		mainFrame.setSize(700, 650);
 		
@@ -29,7 +29,7 @@ public class Main {
 		mainMenu.setLayout(new GridLayout(5, 1));
 
 		JPanel mustrid = new JPanel(new FlowLayout());
-		final JButton näide1 = new JButton("10,5;20,7;1,3;2,2;12,3");
+		final JButton näide1 = new JButton("25,2;3,4;22,2;18,3;26,5;14,1");
 		final JButton näide2 = new JButton("4,2;8,4;16,1;2,5;18,3;12,2;14,4");
 		final JButton näide3 = new JButton("25,5;18,2;5,4;8,3;16,4;5,1;16,2");
 
@@ -130,14 +130,15 @@ public class Main {
 				joonistus.vähendaSamme();
 				joonistus.lisaMällu();
 				joonistus.repaint();
-				System.out.println(joonistus.getprotsessid());
 			}
 		});
 		mainMenu.add(sammuNupp);	
 		
-		JPanel juhendPaneel = new JPanel();
+		JPanel juhendPaneel = new JPanel(new FlowLayout());
 		JLabel juhend = new JLabel();
-		juhend.setText("Juhendid \n kasutamiseksa");
+		juhend.setText("<html><br/><br/>Protsesside poolt kasutuses olevad mäluploki osad on<br/>"
+				+ "värvitud, vaba osa valge. Mäluploki pikkus on 50.<br/>"
+				+ "Protsesside info on antud kujul \"maht\" | \"eluiga\"</html>");
 		juhendPaneel.add(juhend);
 		mainMenu.add(juhendPaneel);
 		
@@ -156,7 +157,8 @@ public class Main {
 		ArrayList<Protsess> protsid = new ArrayList<Protsess>();
 		for (String protsess: protsessid) {
 			String andmed[] = protsess.split(",");
-			Protsess pro = new Protsess(Integer.parseInt(andmed[0]), Integer.parseInt(andmed[1]));
+			Protsess pro = new Protsess(Integer.parseInt(andmed[0]), Integer.parseInt(andmed[1]),
+					new Color((int)(Math.random() * 256), (int)(Math.random() * 256), (int)(Math.random() * 256)));
 			protsid.add(pro);
 		}
 		joonistus.setprotsessid(protsid);

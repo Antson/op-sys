@@ -1,13 +1,16 @@
+import java.awt.Color;
 
 public class Protsess {
 
 	private int eluiga;
 	private int maht;
 	private int algus;
+	private Color värv;
 	
-	Protsess(int maht, int eluiga) {
+	Protsess(int maht, int eluiga, Color värv) {
 		this.eluiga = eluiga;
 		this.maht = maht;
+		this.värv = värv;
 	}
 	
 	public int getEluiga() {
@@ -36,5 +39,9 @@ public class Protsess {
 	
 	public String toString() {
 		return this.maht + " | " + this.eluiga;
+	}
+	
+	public Color getVärv() {
+		return värv;
 	}
 }
