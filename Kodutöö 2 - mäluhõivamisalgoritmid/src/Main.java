@@ -26,7 +26,7 @@ public class Main {
 		mainFrame.add(joonistus);
 
 		JPanel mainMenu = new JPanel();
-		mainMenu.setLayout(new GridLayout(4, 1));
+		mainMenu.setLayout(new GridLayout(5, 1));
 
 		JPanel mustrid = new JPanel(new FlowLayout());
 		final JButton näide1 = new JButton("10,5;20,7;1,3;2,2;12,3");
@@ -134,7 +134,13 @@ public class Main {
 			}
 		});
 		mainMenu.add(sammuNupp);	
-		sammuNupp.setEnabled(false);
+		
+		JPanel juhendPaneel = new JPanel();
+		JLabel juhend = new JLabel();
+		juhend.setText("Juhendid \n kasutamiseksa");
+		juhendPaneel.add(juhend);
+		mainMenu.add(juhendPaneel);
+		
 		
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		mainFrame.setLocation((screen.width - mainFrame.getWidth()) / 2,
@@ -164,7 +170,6 @@ public class Main {
 		joonistus.tühjendaMälu();
 		joonistus.setMälu(mälu);
 		setprotsess(protsess);
-		sammuNupp.setEnabled(true);
 	}
 	
 	public static Joonis getJoonistus() {

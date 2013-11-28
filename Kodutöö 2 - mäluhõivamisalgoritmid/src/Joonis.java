@@ -54,11 +54,13 @@ public class Joonis extends JPanel {
 				graafika.setColor(Color.red);
 				graafika.fillRect(x + 1, y + 1, 149, 9);
 				graafika.setColor(Color.black);
-				graafika.drawString("1", x - 10, y + 10);
+				Integer num = new Integer(i);
+				graafika.drawString(num.toString(), x - 15, y + 10);
 				graafika.setColor(Color.red);
 			} else {
 				graafika.setColor(Color.black);
-				graafika.drawString("0", x - 10, y + 10);
+				Integer num = new Integer(i);
+				graafika.drawString(num.toString(), x - 15, y + 10);
 				graafika.setColor(Color.red);
 			}
 			y -= 10;
@@ -75,16 +77,117 @@ public class Joonis extends JPanel {
 			graafika.drawLine(x + 160, 600 - protsess.getAlgus() * 10
 					- protsess.getMaht() * 10, x + 170,
 					600 - protsess.getAlgus() * 10 - protsess.getMaht() * 10);
-			graafika.drawString(protsess.toString(), x + 180, ((600 - protsess.getAlgus() * 10) + 
-					(600 - protsess.getAlgus() * 10 - protsess.getMaht() * 10)) / 2 + 5);
+			graafika.drawString(
+					protsess.toString(),
+					x + 180,
+					((600 - protsess.getAlgus() * 10) + (600 - protsess
+							.getAlgus() * 10 - protsess.getMaht() * 10)) / 2 + 5);
 		}
 
 	}
-	
+
 	public void lisaMällu() {
-		if(algoritm == "First-fit") {
+		if (algoritm == "First-fit") {
+			
 			protsessidMällu();
+			
+		} else if (algoritm == "Best-fit") {
+			
+			ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
+			for (Protsess protsess : protsessid) {
+				ArrayList<int[]> vabadKohad = leiaKohad();
+				if (!vabadKohad.isEmpty()) {
+					int[] parimVabakoht = null;
+					for (int[] vabakoht : vabadKohad) {
+						if (vabakoht[1] - vabakoht[0] + 1 >= protsess.getMaht()) {
+							if (parimVabakoht == null) {
+								parimVabakoht = vabakoht;
+							} else if (parimVabakoht[1] - parimVabakoht[0] + 1 > 
+							vabakoht[1] - vabakoht[0] + 1) {
+								parimVabakoht = vabakoht;
+							}
+						}
+					}
+					if (parimVabakoht != null) {
+						mälusProtsessid.add(protsess);
+						eemaldamisele.add(protsess);
+						protsess.setAlgus(parimVabakoht[0]);
+						for (int alusta = parimVabakoht[0]; 
+								alusta < parimVabakoht[0] + protsess.getMaht(); alusta++) {
+							mälu[alusta] = 1;
+						}
+					}
+				}
+			}
+			if (!eemaldamisele.isEmpty()) {
+				for (Protsess protsess : eemaldamisele) {
+					protsessid.remove(protsess);
+				}
+			}
+			
+		} else if (algoritm == "Worst-fit") {
+			
+			ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
+			for (Protsess protsess : protsessid) {
+				ArrayList<int[]> vabadKohad = leiaKohad();
+				if (!vabadKohad.isEmpty()) {
+					int[] parimVabakoht = null;
+					for (int[] vabakoht : vabadKohad) {
+						if (vabakoht[1] - vabakoht[0] + 1 >= protsess.getMaht()) {
+							if (parimVabakoht == null) {
+								parimVabakoht = vabakoht;
+							} else if (parimVabakoht[1] - parimVabakoht[0] + 1 < 
+							vabakoht[1] - vabakoht[0] + 1) {
+								parimVabakoht = vabakoht;
+							}
+						}
+					}
+					if (parimVabakoht != null) {
+						mälusProtsessid.add(protsess);
+						eemaldamisele.add(protsess);
+						protsess.setAlgus(parimVabakoht[0]);
+						for (int alusta = parimVabakoht[0]; 
+								alusta < parimVabakoht[0] + protsess.getMaht(); alusta++) {
+							mälu[alusta] = 1;
+						}
+					}
+				}
+			}
+			if (!eemaldamisele.isEmpty()) {
+				for (Protsess protsess : eemaldamisele) {
+					protsessid.remove(protsess);
+				}
+			}
+			
+		} else if (algoritm == "Random-fit") {
+
+			
+			
 		}
+	}
+
+	public ArrayList<int[]> leiaKohad() {
+		ArrayList<int[]> vabadKohad = new ArrayList<int[]>();
+		for (int i = 0; i < mälu.length; i++) {
+			if (mälu[i] == 0) {
+				int algus = i;
+				for (int j = i; j < mälu.length; j++) {
+					if (mälu[j] == 1) {
+						int[] kohad = { i, j - 1 };
+						vabadKohad.add(kohad);
+						i = j;
+						break;
+					}
+					if (j == mälu.length - 1) {
+						int[] kohad = { i, j };
+						vabadKohad.add(kohad);
+						i = j;
+						break;
+					}
+				}
+			}
+		}
+		return vabadKohad;
 	}
 
 	public void protsessidMällu() {
@@ -113,7 +216,7 @@ public class Joonis extends JPanel {
 			}
 		}
 		if (!eemaldamisele.isEmpty()) {
-			for (Protsess protsess: eemaldamisele) {
+			for (Protsess protsess : eemaldamisele) {
 				protsessid.remove(protsess);
 			}
 		}
