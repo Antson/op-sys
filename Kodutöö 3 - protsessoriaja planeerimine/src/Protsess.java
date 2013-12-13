@@ -1,46 +1,43 @@
 import java.awt.Color;
 
 public class Protsess {
-
-	private int eluiga;
-	private int maht;
-	private int algus;
+	
+	private String nimi;
+	private int ajahulk;
+	private int saabumisaeg;
 	private Color värv;
 	
-	Protsess(int maht, int eluiga, Color värv) {
-		this.eluiga = eluiga;
-		this.maht = maht;
+	Protsess(String nimi, int saabumisaeg, int ajahulk, Color värv) {
+		this.nimi = nimi;
+		this.ajahulk = ajahulk;
+		this.saabumisaeg = saabumisaeg;
 		this.värv = värv;
 	}
 	
-	public int getEluiga() {
-		return eluiga;
+	public int getAjahulk() {
+		return ajahulk;
 	}
 
-	public void setEluiga(int eluiga) {
-		this.eluiga = eluiga;
+	public void setAjahulk(int ajahulk) {
+		this.ajahulk = ajahulk;
 	}
 
-	public int getMaht() {
-		return maht;
+	public int getSaabumisaeg() {
+		return saabumisaeg;
 	}
 
-	public void setMaht(int maht) {
-		this.maht = maht;
+	public void setSaabumisaeg(int saabumisaeg) {
+		this.saabumisaeg = saabumisaeg;
 	}
 
-	public void setAlgus(int algus) {
-		this.algus = algus;
-	}
-	
-	public int getAlgus() {
-		return algus;
-	}
-	
 	public String toString() {
-		return this.maht + " | " + this.eluiga;
+		return this.nimi + " | " + this.saabumisaeg + " | " + this.ajahulk;
 	}
 	
+	public String getNimi() {
+		return nimi;
+	}
+
 	public Color getVärv() {
 		return värv;
 	}

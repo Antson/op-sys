@@ -7,17 +7,14 @@ import javax.swing.*;
 
 public class Joonis extends JPanel {
 
-	private ArrayList<Protsess> protsessid = new ArrayList<Protsess>();
-	private ArrayList<Protsess> mälusProtsessid = new ArrayList<Protsess>();
-	private String protsessTekst = "";
-	private String algoritm = "First-fit";
-	private Integer number = 0;
-	private int mälu[] = new int[50];
+	private ArrayList<Protsess> saabuvadProtsessid = new ArrayList<Protsess>();
+	private ArrayList<Protsess> ootelProtsessid = new ArrayList<Protsess>();
+	private String algoritm = "FCFS";
+	private String hetkeProtsess = "Hetkel töödeldav protsess";
+	private String saabuvadTekst = "Saabuvad \nprotsessid: \nSaabumisaeg:";
 
 	public void paintComponent(Graphics g) {
-		int x = 100;
-		int y = 590;
-		int posX;
+		int x = 100, y = 100, laius = 70, kõrgus = 60;
 		super.paintComponent(g);
 		Graphics2D graafika = (Graphics2D) g;
 
@@ -32,266 +29,59 @@ public class Joonis extends JPanel {
 		int tekstX = 15;
 		graafika.drawString("Algoritm:", tekstX, 25);
 		graafika.drawString(algoritm, tekstX + 95, 25);
-		graafika.drawString("Töötlemata protsessid:", tekstX, 50);
+		//graafika.drawString("Töötlemata saabuvadProtsessid:", tekstX, 50);
 		StringBuilder tekstProts = new StringBuilder("");
-		for (Protsess protsess : protsessid) {
-			tekstProts.append(protsess.getMaht());
+		for (Protsess protsess : saabuvadProtsessid) {
+			tekstProts.append(protsess.getSaabumisaeg());
 			tekstProts.append("|");
-			tekstProts.append(protsess.getEluiga());
+			tekstProts.append(protsess.getAjahulk());
 			tekstProts.append(" , ");
 		}
-		if (!protsessid.isEmpty()) {
+		if (!saabuvadProtsessid.isEmpty()) {
 			tekstProts.deleteCharAt(tekstProts.length() - 2);
 		}
-		graafika.drawString(tekstProts.toString(), tekstX, 70);
+		//graafika.drawString(tekstProts.toString(), tekstX, 70);
 		g.setFont(def);
-
-		for (int i = 0; i < 50; i++) {
-			graafika.drawRect(x, y, 150, 10);
-			y -= 10;
-		}
-		y = 590;
-
-		Color plokivärv = new Color(50, 150, 190);
-
-		if (!mälusProtsessid.isEmpty()) {
-			for (Protsess protsess : mälusProtsessid) {
+		
+		//Protsessoriaega saava protsessi joonistamine
+		graafika.drawRect(x, y, 100, 100);
+		
+		
+		//Saabuvate protsesside joonistamine
+		x = 100;
+		if (!saabuvadProtsessid.isEmpty()) {
+			y = 240;
+			for (String rida : saabuvadTekst.split("\n")) {
+				graafika.drawString(rida, x-85, y += graafika.getFontMetrics().getHeight());
+			}
+			y = 240;
+			graafika.setFont(new Font("", Font.BOLD, 15));
+			for (Protsess protsess : saabuvadProtsessid) {
+				graafika.drawRect(x, y, laius, kõrgus);
 				graafika.setColor(protsess.getVärv());
-				y -= protsess.getAlgus() * 10;
-				for (int i = protsess.getAlgus(); i < protsess.getMaht()
-						+ protsess.getAlgus(); i++) {
-					graafika.fillRect(x + 1, y + 1, 149, 9);
-					y -= 10;
-				}
-				y = 590;
+				graafika.fillRect(x+1, y+1, laius - 1, kõrgus - 1);
+				graafika.setColor(new Color(0, 0, 0));
+				graafika.drawString(new String(protsess.getNimi()), 
+						(x + (x+laius))/2 - 7 , y + 20);
+				graafika.drawString(Integer.toString(protsess.getSaabumisaeg())
+						, x + 30, y + kõrgus - 10);
+				x += laius;			
 			}
-		}
-		graafika.setColor(Color.black);
-		for (int i = 0; i < mälu.length; i++) {
-			Integer num = new Integer(i);
-			graafika.drawString(num.toString(), x - 15, y + 10);
-			y -= 10;
-		}
-		y = 590;
-
-		graafika.setColor(Color.black);
-		for (Protsess protsess : mälusProtsessid) {
-			graafika.drawLine(x + 160, 600 - protsess.getAlgus() * 10, x + 170,
-					600 - protsess.getAlgus() * 10);
-			graafika.drawLine(x + 170, 600 - protsess.getAlgus() * 10, x + 170,
-					600 - protsess.getAlgus() * 10 - protsess.getMaht() * 10);
-			graafika.drawLine(x + 160, 600 - protsess.getAlgus() * 10
-					- protsess.getMaht() * 10, x + 170,
-					600 - protsess.getAlgus() * 10 - protsess.getMaht() * 10);
-			graafika.drawString(
-					protsess.toString(),
-					x + 180,
-					((600 - protsess.getAlgus() * 10) + (600 - protsess
-							.getAlgus() * 10 - protsess.getMaht() * 10)) / 2 + 5);
+			x = 100;
+			graafika.drawLine(x, y + kõrgus/2, x + 
+					(laius*saabuvadProtsessid.size()),  y + kõrgus/2);
+			graafika.setFont(def);
 		}
 
-	}
 
-	public void lisaMällu() {
-		if (algoritm == "First-fit") {
-
-			protsessidMällu();
-
-		} else if (algoritm == "Best-fit") {
-
-			ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
-			for (Protsess protsess : protsessid) {
-				ArrayList<int[]> vabadKohad = leiaKohad();
-				if (!vabadKohad.isEmpty()) {
-					int[] parimVabakoht = null;
-					for (int[] vabakoht : vabadKohad) {
-						if (vabakoht[1] - vabakoht[0] + 1 >= protsess.getMaht()) {
-							if (parimVabakoht == null) {
-								parimVabakoht = vabakoht;
-							} else if (parimVabakoht[1] - parimVabakoht[0] + 1 > vabakoht[1]
-									- vabakoht[0] + 1) {
-								parimVabakoht = vabakoht;
-							}
-						}
-					}
-					if (parimVabakoht != null) {
-						mälusProtsessid.add(protsess);
-						eemaldamisele.add(protsess);
-						protsess.setAlgus(parimVabakoht[0]);
-						for (int alusta = parimVabakoht[0]; alusta < parimVabakoht[0]
-								+ protsess.getMaht(); alusta++) {
-							mälu[alusta] = 1;
-						}
-					}
-				}
-			}
-			if (!eemaldamisele.isEmpty()) {
-				for (Protsess protsess : eemaldamisele) {
-					protsessid.remove(protsess);
-				}
-			}
-
-		} else if (algoritm == "Worst-fit") {
-
-			ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
-			for (Protsess protsess : protsessid) {
-				ArrayList<int[]> vabadKohad = leiaKohad();
-				if (!vabadKohad.isEmpty()) {
-					int[] parimVabakoht = null;
-					for (int[] vabakoht : vabadKohad) {
-						if (vabakoht[1] - vabakoht[0] + 1 >= protsess.getMaht()) {
-							if (parimVabakoht == null) {
-								parimVabakoht = vabakoht;
-							} else if (parimVabakoht[1] - parimVabakoht[0] + 1 < vabakoht[1]
-									- vabakoht[0] + 1) {
-								parimVabakoht = vabakoht;
-							}
-						}
-					}
-					if (parimVabakoht != null) {
-						mälusProtsessid.add(protsess);
-						eemaldamisele.add(protsess);
-						protsess.setAlgus(parimVabakoht[0]);
-						for (int alusta = parimVabakoht[0]; alusta < parimVabakoht[0]
-								+ protsess.getMaht(); alusta++) {
-							mälu[alusta] = 1;
-						}
-					}
-				}
-			}
-			if (!eemaldamisele.isEmpty()) {
-				for (Protsess protsess : eemaldamisele) {
-					protsessid.remove(protsess);
-				}
-			}
-
-		} else if (algoritm == "Random-fit") {
-
-			ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
-			for (Protsess protsess : protsessid) {
-				ArrayList<int[]> vabadKohad = leiaKohad();
-				if (!vabadKohad.isEmpty()) {
-					ArrayList<int[]> sobivadKohad = new ArrayList<int[]>();
-					for (int[] vabakoht : vabadKohad) {
-						if (vabakoht[1] - vabakoht[0] + 1 >= protsess.getMaht()) {
-							sobivadKohad.add(vabakoht);
-						}
-					}
-					if (!sobivadKohad.isEmpty()) {
-						int index = (int) (Math.random() * sobivadKohad.size());
-						int[] juhuslikKoht = sobivadKohad.get(index);
-						mälusProtsessid.add(protsess);
-						eemaldamisele.add(protsess);
-						protsess.setAlgus(juhuslikKoht[0]);
-						for (int alusta = juhuslikKoht[0]; alusta < juhuslikKoht[0]
-								+ protsess.getMaht(); alusta++) {
-							mälu[alusta] = 1;
-						}
-					}
-				}
-			}
-			if (!eemaldamisele.isEmpty()) {
-				for (Protsess protsess : eemaldamisele) {
-					protsessid.remove(protsess);
-				}
-			}
-
-		}
-	}
-
-	public ArrayList<int[]> leiaKohad() {
-		ArrayList<int[]> vabadKohad = new ArrayList<int[]>();
-		for (int i = 0; i < mälu.length; i++) {
-			if (mälu[i] == 0) {
-				int algus = i;
-				for (int j = i; j < mälu.length; j++) {
-					if (mälu[j] == 1) {
-						int[] kohad = { i, j - 1 };
-						vabadKohad.add(kohad);
-						i = j;
-						break;
-					}
-					if (j == mälu.length - 1) {
-						int[] kohad = { i, j };
-						vabadKohad.add(kohad);
-						i = j;
-						break;
-					}
-				}
-			}
-		}
-		return vabadKohad;
-	}
-
-	public void protsessidMällu() {
-		ArrayList<Protsess> eemaldamisele = new ArrayList<Protsess>();
-		for (Protsess protsess : protsessid) {
-			boolean leitiKoht = false;
-			for (int i = 0; i < mälu.length; i++) {
-				if (mälu[i] == 0) {
-					for (int algus = i, pikkus = 1; algus < mälu.length; algus++, pikkus++) {
-						if (mälu[algus] != 0)
-							break;
-						if (pikkus == protsess.getMaht()) {
-							leitiKoht = true;
-							mälusProtsessid.add(protsess);
-							eemaldamisele.add(protsess);
-							protsess.setAlgus(i);
-							for (int alusta = i; alusta < i + pikkus; alusta++) {
-								mälu[alusta] = 1;
-							}
-						}
-					}
-				}
-				if (leitiKoht == true) {
-					break;
-				}
-			}
-		}
-		if (!eemaldamisele.isEmpty()) {
-			for (Protsess protsess : eemaldamisele) {
-				protsessid.remove(protsess);
-			}
-		}
-	}
-
-	public void vähendaSamme() {
-		ArrayList<Protsess> lõppenud = new ArrayList<Protsess>();
-		for (Protsess protsess : mälusProtsessid) {
-			protsess.setEluiga(protsess.getEluiga() - 1);
-			if (protsess.getEluiga() == 0) {
-				lõppenud.add(protsess);
-			}
-		}
-		if (!lõppenud.isEmpty()) {
-			eemaldaMälust(lõppenud);
-		}
-	}
-
-	public void eemaldaMälust(ArrayList<Protsess> protsessid) {
-		for (Protsess protsess : protsessid) {
-			for (int i = protsess.getAlgus(); i < protsess.getMaht()
-					+ protsess.getAlgus(); i++) {
-				mälu[i] = 0;
-			}
-			mälusProtsessid.remove(protsess);
-		}
-	}
-
-	public String getProtsessTekst() {
-		return protsessTekst;
-	}
-
-	public void setProtsessTekst(String protsessTekst) {
-		this.protsessTekst = protsessTekst;
 	}
 
 	public ArrayList<Protsess> getprotsessid() {
-		return protsessid;
+		return saabuvadProtsessid;
 	}
 
-	public void setprotsessid(ArrayList<Protsess> s) {
-		this.protsessid = s;
+	public void setSaabuvad(ArrayList<Protsess> s) {
+		this.saabuvadProtsessid = s;
 	}
 
 	public String getAlgoritm() {
@@ -302,11 +92,4 @@ public class Joonis extends JPanel {
 		this.algoritm = algoritm;
 	}
 
-	public void setMälu(int[] mälu) {
-		this.mälu = mälu;
-	}
-
-	public void tühjendaMälu() {
-		mälusProtsessid.clear();
-	}
 }

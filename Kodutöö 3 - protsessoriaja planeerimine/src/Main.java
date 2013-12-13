@@ -18,7 +18,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		mainFrame = new JFrame("Mäluhõivamisalgoritmide simulaator");
-		mainFrame.setLayout(new GridLayout(1,2));
+		mainFrame.setLayout(new GridLayout(2,1));
 		mainFrame.setSize(700, 650);
 		
 		joonistus = new Joonis();
@@ -26,7 +26,7 @@ public class Main {
 		mainFrame.add(joonistus);
 
 		JPanel mainMenu = new JPanel();
-		mainMenu.setLayout(new GridLayout(5, 1));
+		mainMenu.setLayout(new GridLayout(1,5));
 
 		JPanel mustrid = new JPanel(new FlowLayout());
 		final JButton näide1 = new JButton("25,2;3,4;22,2;18,3;26,5;14,1");
@@ -110,25 +110,26 @@ public class Main {
 		
 		//Algoritmide nupud
 		JPanel algoritmid = new JPanel(new FlowLayout());
-		JButton alg1 = new JButton("First-fit");
-		JButton alg2 = new JButton("Best-fit");
-		JButton alg3 = new JButton("Worst-fit");
-		JButton alg4 = new JButton("Random-fit");		
+		JButton alg1 = new JButton("FCFS");
+		JButton alg2 = new JButton("SJF");
+		JButton alg3 = new JButton("SRTF");
+		JButton alg4 = new JButton("RR");
+		JButton alg5 = new JButton("Mitme");
 		algoritmid.add(alg1);
 		algoritmid.add(alg2);
 		algoritmid.add(alg3);
 		algoritmid.add(alg4);
+		algoritmid.add(alg5);
 		alg1.addActionListener(new Nupukuular());
 		alg2.addActionListener(new Nupukuular());
 		alg3.addActionListener(new Nupukuular());
 		alg4.addActionListener(new Nupukuular());
+		alg5.addActionListener(new Nupukuular());
 		mainMenu.add(algoritmid);
 		
 		sammuNupp = new JButton("Järgmine samm");
 		sammuNupp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) throws ConcurrentModificationException {
-				joonistus.vähendaSamme();
-				joonistus.lisaMällu();
 				joonistus.repaint();
 			}
 		});
@@ -155,22 +156,20 @@ public class Main {
 	private static void setprotsess(String s) {
 		String protsessid[] = s.split(";");
 		ArrayList<Protsess> protsid = new ArrayList<Protsess>();
+		int i = 1;
 		for (String protsess: protsessid) {
 			String andmed[] = protsess.split(",");
-			Protsess pro = new Protsess(Integer.parseInt(andmed[0]), Integer.parseInt(andmed[1]),
+			Protsess pro = new Protsess("P" + i, Integer.parseInt(andmed[0]), Integer.parseInt(andmed[1]),
 					new Color((int)(Math.random() * 256), (int)(Math.random() * 256), (int)(Math.random() * 256)));
 			protsid.add(pro);
+			i++;
 		}
-		joonistus.setprotsessid(protsid);
-		joonistus.setProtsessTekst(s);
-		joonistus.protsessidMällu();
+		System.out.println(protsid);
+		joonistus.setSaabuvad(protsid);
 		joonistus.repaint();
 	}
 	
 	private static void alusta(String protsess) {
-		int mälu[] = new int[50];
-		joonistus.tühjendaMälu();
-		joonistus.setMälu(mälu);
 		setprotsess(protsess);
 	}
 	
