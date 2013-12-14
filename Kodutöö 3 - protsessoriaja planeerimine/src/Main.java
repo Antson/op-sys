@@ -26,10 +26,14 @@ public class Main {
 		mainFrame.add(joonistus);
 
 		JPanel mainMenu = new JPanel();
-		mainMenu.setLayout(new GridLayout(1,5));
-
+		mainMenu.setLayout(new GridLayout(2,1));
+		JPanel subMenuUp = new JPanel(new GridLayout(1,2));
+		JPanel subMenuDown = new JPanel(new GridLayout(1,3));
+		mainMenu.add(subMenuUp);
+		mainMenu.add(subMenuDown);
+		
 		JPanel mustrid = new JPanel(new FlowLayout());
-		final JButton näide1 = new JButton("25,2;3,4;22,2;18,3;26,5;14,1");
+		final JButton näide1 = new JButton("0,4;2,5;3,6;6,4;10,2");
 		final JButton näide2 = new JButton("4,2;8,4;16,1;2,5;18,3;12,2;14,4");
 		final JButton näide3 = new JButton("25,5;18,2;5,4;8,3;16,4;5,1;16,2");
 
@@ -54,7 +58,7 @@ public class Main {
 		mustrid.add(näide1);
 		mustrid.add(näide2);
 		mustrid.add(näide3);
-		mainMenu.add(mustrid);
+		subMenuUp.add(mustrid);
 
 		omaprotsess = new JTextField();
 		JButton simuleeriNupp = new JButton("Simuleeri oma \n"
@@ -105,7 +109,8 @@ public class Main {
 				}
 			}
 		});
-		mainMenu.add(omaSisend);
+		
+		subMenuUp.add(omaSisend);
 		mainFrame.add(mainMenu);
 		
 		//Algoritmide nupud
@@ -125,15 +130,17 @@ public class Main {
 		alg3.addActionListener(new Nupukuular());
 		alg4.addActionListener(new Nupukuular());
 		alg5.addActionListener(new Nupukuular());
-		mainMenu.add(algoritmid);
+		subMenuDown.add(algoritmid);
 		
 		sammuNupp = new JButton("Järgmine samm");
 		sammuNupp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) throws ConcurrentModificationException {
+				joonistus.vähendaAegu();
+				joonistus.töötleProtsessi();
 				joonistus.repaint();
 			}
 		});
-		mainMenu.add(sammuNupp);	
+		subMenuDown.add(sammuNupp);	
 		
 		JPanel juhendPaneel = new JPanel(new FlowLayout());
 		JLabel juhend = new JLabel();
@@ -141,7 +148,7 @@ public class Main {
 				+ "värvitud, vaba osa valge. Mäluploki pikkus on 50.<br/>"
 				+ "Protsesside info on antud kujul \"maht\" | \"eluiga\"</html>");
 		juhendPaneel.add(juhend);
-		mainMenu.add(juhendPaneel);
+		subMenuDown.add(juhendPaneel);
 		
 		
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -170,6 +177,8 @@ public class Main {
 	}
 	
 	private static void alusta(String protsess) {
+		joonistus.setOotelProtsessid(new ArrayList<Protsess>());
+		joonistus.setTöötavProtsess(null);
 		setprotsess(protsess);
 	}
 	
